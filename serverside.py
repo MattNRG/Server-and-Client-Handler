@@ -17,9 +17,12 @@ packets = {
 }
 
 currentRobots = {}
-# Format, robotID: (IP, PORT), TIME, SOCKET
-# RobotID, TUPLE [0], TIME [1], SOCKET [2]
+# Format, robotID: (IP, PORT), TIME, SOCKET, ACTIVE
+# RobotID, TUPLE [0], TIME [1], SOCKET [2], ACTIVE [3]
 def disconnectRobot(robotID):
+    currentRobots[robotID][3] = False
+    currentRobots[robotID][2].close()
+    del currentRobots[robotID]
     pass
 
 def checkRobots():
@@ -28,27 +31,25 @@ def checkRobots():
         for robotID in list(currentRobots):
             if time.time() - currentRobots[robotID][1] > 10:
                 print(f'Removing {robotID} for inactivity')
-                currentRobots[robotID][2].close()
-                del currentRobots[robotID]
+                disconnectRobot(robotID)
         time.sleep(1)
 
 def connectRobot(client, addr, robotID):
     if robotID not in currentRobots:
-        currentRobots[robotID] = [addr,time.time(), client]
+        currentRobots[robotID] = [addr,time.time(), client, True]
         print(currentRobots)
     pass
 
 def handleClient(client, addr):
     print("Connected by: ", addr)
-    connected = True
-    while connected:
+    while currentRobots[3]:
         #messageType = client.recv(1024).decode()
        #messageType = int(messageType)
         message = client.recv(1024).decode()
         print(f"{addr[0]}: {message}")
 
         if message == "end":
-            connected = False
+            disconnectRobot()
             break
 
     print(f"{addr[0]} disconnected")
