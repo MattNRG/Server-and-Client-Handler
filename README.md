@@ -2,7 +2,7 @@
 Updated version of NRG RoboCup Wifi Handler. This is under development and research thus It's not yet on the main repository.
 
 **What changed?**
-Got rid of _Tie 'n' Pair_ replacing it with a new system. Using a static IP, now the robots send connection requests themselves avoiding the problem of looking for robots only at the start of the program. Likewise using STREAM not DGRAM we can leave the connections open for easier messaging. 
+Got rid of _Tie 'n' Pair_ replacing it with a new system. Using a static IP, the robots send connection requests themselves avoiding the problem of looking for robots only at the start of the program. Likewise using STREAM not DGRAM we can leave the connections open for easier messaging. 
 
 Everything is threaded (Maybe a bit too much), making sure everything gets through and processed.
 
