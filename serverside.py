@@ -23,7 +23,7 @@ currentRobots = {}
 def checkRobots():
     # Basically heartbeat monitor so robo can connect again
     while True:
-        for robotID in currentRobots:
+        for robotID in list(currentRobots):
             if time.time() - currentRobots[robotID][1] > 10:
                 print(f'Removing {robotID} for inactivity')
                 currentRobots[robotID][2].close()
