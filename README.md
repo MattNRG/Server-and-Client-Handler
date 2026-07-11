@@ -6,7 +6,7 @@ Got rid of _Tie 'n' Pair_ replacing it with a new system. Using a static IP, the
 
 Everything is threaded (Maybe a bit too much), making sure everything gets through and processed.
 
-And finally, we no longer use json to save the IP's (Since the robots can connect at any time) and is replaced with a simple directory.
+And finally, we no longer use JSON to save the IP's (Since the robots can connect at any time) and is replaced with a simple directory.
 
 
 "If I’ve learned one thing, it’s that before you get anywhere in life, you gotta stop listening to yourself" - Jerry Smith
