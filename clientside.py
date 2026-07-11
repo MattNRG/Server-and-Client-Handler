@@ -1,6 +1,8 @@
 import socket
 import time
 
+roboID = 12
+
 print(f"Current IP: {socket.gethostbyname(socket.gethostname())}")
 
 while True:
@@ -8,6 +10,7 @@ while True:
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect(('127.0.0.1', 9999))
         print("Connected")
+        client.send(roboID.encode())
         while True:
             client.send((input("What to send: ")).encode())
     except:
