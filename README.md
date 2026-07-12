@@ -21,8 +21,8 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 
 ## Testing Equipment
 
--TP-Link TL-WR844N
+- TP-Link TL-WR844N
 
--Macbook Pro 2020
+- Macbook Pro 2020
 
--Raspberry Pi 4
+- Raspberry Pi 4
