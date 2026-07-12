@@ -4,7 +4,8 @@ import threading
 import time
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('0.0.0.0', 9999))  # Listening on ethernet, wifi and loopback
+server.bind(('0.0.0.0', 9999))  # Listening on ethernet, Wi-Fi and loopback
+
 
 # Super proud of this
 class Robot:
@@ -16,7 +17,7 @@ class Robot:
         self.connected = False
 
         self.onMap = False
-        self.position = (0,0)
+        self.position = (0, 0)
         self.rotation = 0
         self.battery = 100
 
@@ -33,7 +34,8 @@ class Robot:
         self.socket.close()
         print(f"Robot{self.id}: {self.addr[0]} disconnected")
 
-# Packet handleres unfinished
+
+# Packet handlers unfinished
 packets = {
     #1: ('FORMAT', connectRobot),
     #2: ('FORMAT', sendCommands),
@@ -50,6 +52,7 @@ heartBeatTime = 10
 checkHeartbeat = 3
 loadRobots = 10  # Starts from 0
 
+
 def addRobots():
     for i in range(loadRobots):
         robotID = str(i)
@@ -57,6 +60,7 @@ def addRobots():
         currentRobots[robotID] = robotClass
 
     print(f'Loaded: {currentRobots}')
+
 
 def checkRobots():
     # Basically heartbeat monitor so robo can connect again
@@ -71,29 +75,35 @@ def checkRobots():
                 robotClass.disconnect()
         time.sleep(checkHeartbeat)
 
-def connectRobot(client, addr, robotID):
+    # def connectRobot(client, addr, robotID):
     robotClass = Robot(robotID, addr, client)
     currentRobots[robotID] = robotClass
     print(currentRobots)
-    return robotClass
+    return robotClassc  #
+
 
 def handleClient(robotid):
     robotClass = currentRobots[robotid]
     print("Connected by: ", robotClass.addr[0])
     while True:
         try:
-            #messageType = client.recv(1024).decode()
-           #messageType = int(messageType)
+            # messageType = client.recv(1024).decode()
+            # messageType = int(messageType)
             message = robotClass.socket.recv(1024).decode()
             print(f"{robotClass.addr[0]}: {message}")
             robotClass.lastSeen = time.time()
 
             if message == "end":
                 break
-        except:
+        except Exception as e:
+            print(e)
             break
-    if not robotClass.connected: return
+
+    if not robotClass.connected:
+        return
+
     robotClass.disconnect()
+
 
 def startServer():
     print(f"Server created - IP: {socket.gethostbyname(socket.gethostname())}")
