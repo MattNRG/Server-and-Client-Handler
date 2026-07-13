@@ -2,11 +2,38 @@ import socket
 import struct
 import threading
 import time
+import notify as notify # Debug use only
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('0.0.0.0', 9999))
+server.bind(('0.0.0.0', 9998))  # Listening on ethernet, Wi-Fi and loopback
 
-# Packet handleres unfinished
+
+class Robot:
+    def __init__(self, robotid):
+        self.id = robotid
+        self.addr = None
+        self.socket = None
+        self.lastSeen = 0
+        self.connected = False
+
+        self.onMap = False
+        self.position = (0, 0)
+        self.rotation = 0
+        self.battery = 100
+
+    def getMessage(self):
+        return self.socket.recv(1024)
+
+    def sendMessage(self, package):
+        self.socket.send(package)
+
+    def disconnect(self):
+        self.connected = False
+        self.socket.close()
+        print(f"Robot {self.id}: {self.addr[0]} disconnected")
+
+
+# Packet handlers unfinished
 packets = {
     #1: ('FORMAT', connectRobot),
     #2: ('FORMAT', sendCommands),
@@ -17,52 +44,96 @@ packets = {
 }
 
 currentRobots = {}
-# Format, robotID: (IP, PORT), TIME, SOCKET
-# RobotID, TUPLE [0], TIME [1], SOCKET [2]
+# Format, robotID: RobotClass
+
+heartBeatTime = 10
+checkHeartbeat = 3
+loadRobots = 1  # Starts from 0
+
+
+def addRobots():
+    for i in range(loadRobots):
+        robotID = str(i)
+        robotClass = Robot(robotID)
+        currentRobots[robotID] = robotClass
+
+    print('Robots loaded successfully')
+
 
 def checkRobots():
     # Basically heartbeat monitor so robo can connect again
     while True:
+        # print(currentRobots)
         for robotID in list(currentRobots):
-            if time.time() - currentRobots[robotID][1] > 10:
-                print(f'Removing {robotID} for inactivity')
-                currentRobots[robotID][2].close()
-                del currentRobots[robotID]
-        time.sleep(1)
+            # print(f"Checking {robotID}")
+            robotClass = currentRobots[robotID]
 
-def connectRobot(client, addr, robotID):
-    if robotID not in currentRobots:
-        currentRobots[robotID] = [addr,time.time(), client]
-        print(currentRobots)
-    pass
+            if time.time() - robotClass.lastSeen > heartBeatTime and robotClass.connected:
+                print(f'Disconnecting {robotID} due to inactivity')
+                robotClass.disconnect()
+        time.sleep(checkHeartbeat)
 
-def handleClient(client, addr):
-    print("Connected by: ", addr)
-    connected = True
-    while connected:
-        #messageType = client.recv(1024).decode()
-       #messageType = int(messageType)
-        message = client.recv(1024).decode()
-        print(f"{addr[0]}: {message}")
-        if message == "end":
-            connected = False
+    # def connectRobot(client, addr, robotID):
+    robotClass = Robot(robotID, addr, client)
+    currentRobots[robotID] = robotClass
+    print(currentRobots)
+    return robotClassc  #
+
+
+def handleClient(robotid):
+    robotClass = currentRobots[robotid]
+    print("Connected by: ", robotClass.addr[0])
+    while True:
+        try:
+            # messageType = client.recv(1024).decode()
+            # messageType = int(messageType)
+            message = robotClass.getMessage().decode()
+            print(f"Robot {robotClass.id}: {message}")
+            robotClass.lastSeen = time.time()
+
+            if message == "end" or message == "":
+                break
+
+        except Exception as Error:
+            print(Error)
             break
 
-    print(f"{addr[0]} disconnected")
-    client.close()
+    if not robotClass.connected:
+        return
+
+    robotClass.disconnect()
+    print("Ending thread")
+
+# Readding so we can safely connect robots (currently it can cause memory leakage)
+def connectRobot(client, addr, robotid):
+
+    if currentRobots[robotid].connected:
+        currentRobots[robotid].socket.close()
+
+    currentRobots[robotid].lastSeen = time.time()
+    currentRobots[robotid].connected = True
+    currentRobots[robotid].addr = addr
+    currentRobots[robotid].socket = client
+
+
 
 def startServer():
-    print(f"Server; {socket.gethostbyname(socket.gethostname())}")
+    print(f"IP: {socket.gethostbyname(socket.gethostname())}")
     server.listen()
     while True:
         client, addr = server.accept()
-        print("New ROBOT connected")
-        thread = threading.Thread(target=handleClient, args=(client, addr), daemon=True)
+
+        robotid = client.recv(1024).decode()
+        connectRobot(client, addr, robotid)
+
+        notify.message(f"ROBOT{robotid} connected", f'IP: {addr[0]}')
+
+        thread = threading.Thread(target=handleClient, args=robotid, daemon=True)
         thread.start()
-        connectRobot(client, addr, 1)
         print(f"Currently {threading.active_count() - 2} connection threads active")
 
 
+addRobots()
 threading.Thread(target=startServer, daemon=True).start()
 threading.Thread(target=checkRobots(), daemon=True).start()
 input("Press enter to stop")
