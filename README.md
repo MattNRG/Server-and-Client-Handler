@@ -29,5 +29,6 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 
 ## Updates
 
-- **Threads and Heartbeat**: *Moved to classes, and now using a heartbeat to check if the robot is still connected.*
-- **Pack and Unpack [WORKING ON IT]**: *Implemented Structs to pack and unpack data.*
+- [x] **Threads and Heartbeat**: *Moved to classes, and now using a heartbeat to check if the robot is still connected.*
+- [x] **Pack and Unpack**: *Implemented Structs to pack and unpack data.*
+- [ ] **Pack and Unpack +**: *Recieve data from Vision and implement working Client heartbeat*
