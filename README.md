@@ -27,12 +27,17 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 
 - Raspberry Pi 4
 
-## Updates and Roadmap
+## Updates
 
-- [x] Threads and Heartbeat: *Moved to classes, and now using a heartbeat to check if the robot is still connected.*
-- [x] Pack and Unpack: *Implemented Structs to pack and unpack data.*
-- [ ] Pack and Unpack **+**: *Recieve data from Vision and implement working Client heartbeat*
+- Threads and Heartbeat: *Moved to classes, and now using a heartbeat to check if the robot is still connected.*
+- Pack and Unpack: *Implemented Structs to pack and unpack data.*
+
+## Roadmap
+- [x] Move Information to Classes
+- [x] Implement Server and Client Communication
+- [x] Add struct support to communications
+- [x] Implement Heartbeat
+- [ ] Receive data from Vision and implement working Client heartbeat
 - [ ] Make Printing more readable/transparent about what's happening
 - [ ] Add Early Info to Client
 - [ ] Add GetInfo and SetParams to Client
-- 
