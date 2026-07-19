@@ -44,7 +44,5 @@ def getData():
     return packet
 
 
-print("getVision ready")
-while True:
-    data = getData()
-    print(data)
+print("[VISION] Proto files compiled.")
+print("[VISION] Ready to receive.")

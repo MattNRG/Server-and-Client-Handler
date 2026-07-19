@@ -3,6 +3,7 @@ import struct
 import threading
 import time
 import notify as notify  # Debug use only
+from vision import getData
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(('0.0.0.0', 9997))  # Listening on ethernet, Wi-Fi and loopback
@@ -37,7 +38,7 @@ class Robot:
     def disconnect(self):
         self.connected = False
         self.socket.close()
-        print(f"Robot {self.id}: {self.addr[0]} disconnected")
+        print(f"[ROBOT {self.id}] {self.addr[0]} disconnected")
 
 
 loadedRobots = {}
@@ -55,7 +56,7 @@ def unpack(packet, robotClass):
     # 5 Stop all
     # 6 Error?
     # 7 Message
-    print(packet)
+    #print(f'[DEBUG] Packet: {packet}')
 
     # Needs a way to manage broken pipe
 
@@ -67,9 +68,10 @@ def unpack(packet, robotClass):
             robotClass.battery = battery
             robotClass.gyroRotation = gyroRotation
         case 4:
-            pass
+            print("Heartbeat")
+            robotClass.lastSeen = time.time()
         case 7:
-            print(f'Robot{robotClass.id}: {packet.decode()}')
+            print(f'[ROBOT{robotClass.id}] {packet.decode()}')
             pass
 
 def addRobots():
@@ -78,7 +80,7 @@ def addRobots():
         robotClass = Robot(robotID)
         loadedRobots[robotID] = robotClass
 
-    print('Robots loaded successfully')
+    print('[SERVER] Robots loaded successfully')
 
 
 def checkRobots():
@@ -90,14 +92,13 @@ def checkRobots():
             robotClass = loadedRobots[robotID]
 
             if time.time() - robotClass.lastSeen > heartBeatTime and robotClass.connected:
-                print(f'Disconnecting {robotID} due to inactivity')
+                print(f'[SERVER] Disconnecting {robotID} due to inactivity')
                 robotClass.disconnect()
         time.sleep(checkHeartbeat)
 
 
 def handleRobot(robotid):
     robotClass = loadedRobots[robotid]
-    print("Connected by: ", robotClass.addr[0])
     while True:
         try:
             message = robotClass.getMessage() # Upgrade to unpackManager
@@ -115,17 +116,7 @@ def handleRobot(robotid):
         return
 
     robotClass.disconnect()
-    print("Ending thread")
-
-def connectRobot(client, addr, robotid):
-
-    if loadedRobots[robotid].connected:
-        loadedRobots[robotid].socket.close()
-
-    loadedRobots[robotid].lastSeen = time.time()
-    loadedRobots[robotid].connected = True
-    loadedRobots[robotid].addr = addr
-    loadedRobots[robotid].socket = client
+    print("[SERVER] Ending thread")
 
 
 def startServer():
@@ -135,13 +126,20 @@ def startServer():
         client, addr = server.accept()
 
         robotid = client.recv(1024).decode()
-        connectRobot(client, addr, robotid)
 
-        notify.message(f"ROBOT{robotid} connected", f'IP: {addr[0]}')
+        if loadedRobots[robotid].connected:
+            loadedRobots[robotid].socket.close()
+
+        loadedRobots[robotid].lastSeen = time.time()
+        loadedRobots[robotid].connected = True
+        loadedRobots[robotid].addr = addr
+        loadedRobots[robotid].socket = client
+
+        notify.message(f"[SERVER] ROBOT{robotid} connected", f'IP: {addr[0]}')
 
         thread = threading.Thread(target=handleRobot, args=robotid, daemon=True)
         thread.start()
-        print(f"Currently {threading.active_count() - 2} connection threads active")
+        print(f"[SERVER] Currently {threading.active_count() - 2} connection threads active")
 
 
 addRobots()
