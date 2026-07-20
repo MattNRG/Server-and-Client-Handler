@@ -14,34 +14,28 @@ if any(
         '--python_out=.', '--pyi_out=.',
         *[str(path) for path in pathlib.Path().rglob('proto/*.proto')]
     ])
+
 print("[VISION] Proto files compiled.")
 from proto.ssl_vision_wrapper_pb2 import SSL_WrapperPacket
 
-def open_multicast_socket(ip: str, port: int) -> socket.socket:
+class visionClient:
+    def __init__(self, ip: str, port: int):
+        self.packet = SSL_WrapperPacket()
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.bind(('' if os.name == 'nt' else ip, port))
 
-    sock.bind(('' if os.name == 'nt' else ip, port))
+        self.sock.setsockopt(
+            socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP,
+            struct.pack('4sl', socket.inet_aton(ip), socket.INADDR_ANY)
+        )
+        print("[VISION] Ready to receive.")
 
-    sock.setsockopt(
-        socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP,
-        struct.pack('4sl', socket.inet_aton(ip), socket.INADDR_ANY)
-    )
-    return sock
-
-
-visionSocket = open_multicast_socket('224.5.23.2', 10006)
-
-def getData():
-    data, address = visionSocket.recvfrom(1024)
-    print(data)
-    # print(data.decode('utf-8'))
-
-    packet = SSL_WrapperPacket()
-    packet.ParseFromString(data)
-
-    return packet
-
-
-print("[VISION] Ready to receive.")
+    def receive(self):
+        data, address = self.sock.recvfrom(1024)
+        print(data)
+        # print(data.decode('utf-8'))
+        packet = SSL_WrapperPacket()
+        packet.ParseFromString(data)
+        return packet
