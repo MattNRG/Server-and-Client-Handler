@@ -1,3 +1,4 @@
+import colorama
 import socket
 import struct
 import threading
@@ -5,8 +6,11 @@ import time
 import notify as notify  # Debug use only
 from vision import getData
 
+from colorama import Fore, Back
+colorama.init(autoreset=True)
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('0.0.0.0', 9997))  # Listening on ethernet, Wi-Fi and loopback
+server.bind(('0.0.0.0', 9997))  # Listening on everything
 
 class Ball:
     def __init__(self):
@@ -38,7 +42,7 @@ class Robot:
     def disconnect(self):
         self.connected = False
         self.socket.close()
-        print(f"[ROBOT {self.id}] {self.addr[0]} disconnected")
+        print(Fore.YELLOW + f"[ROBOT {self.id}] {self.addr[0]} disconnected")
 
 
 loadedRobots = {}
@@ -68,7 +72,6 @@ def unpack(packet, robotClass):
             robotClass.battery = battery
             robotClass.gyroRotation = gyroRotation
         case 4:
-            print("Heartbeat")
             robotClass.lastSeen = time.time()
         case 7:
             print(f'[ROBOT{robotClass.id}] {packet.decode()}')
@@ -92,7 +95,7 @@ def checkRobots():
             robotClass = loadedRobots[robotID]
 
             if time.time() - robotClass.lastSeen > heartBeatTime and robotClass.connected:
-                print(f'[SERVER] Disconnecting {robotID} due to inactivity')
+                print(Back.RED + f'[SERVER] Disconnecting {robotID} due to inactivity')
                 robotClass.disconnect()
         time.sleep(checkHeartbeat)
 
@@ -101,26 +104,25 @@ def handleRobot(robotid):
     robotClass = loadedRobots[robotid]
     while True:
         try:
-            message = robotClass.getMessage() # Upgrade to unpackManager
+            message = robotClass.getMessage()
 
             unpack(message, robotClass)
 
-            if message == "end" or message == "":  # Needs fixing
+            if message == "end" or message == "":
                 break
 
         except Exception as Error:
-            print(Error)
+            print(Back.RED + f'Ending thread due to {Error}')
             break
 
     if not robotClass.connected:
         return
 
     robotClass.disconnect()
-    print("[SERVER] Ending thread")
+    print(Fore.YELLOW + "[SERVER] Ending thread")
 
 
 def startServer():
-    print(f"IP: {socket.gethostbyname(socket.gethostname())}")
     server.listen()
     while True:
         client, addr = server.accept()
@@ -135,7 +137,8 @@ def startServer():
         loadedRobots[robotid].addr = addr
         loadedRobots[robotid].socket = client
 
-        notify.message(f"[SERVER] ROBOT{robotid} connected", f'IP: {addr[0]}')
+        notify.message(f"[SERVER] ROBOT {robotid} connected", f'IP: {addr[0]}')
+        print(Back.GREEN + f'[SERVER] ROBOT {robotid} connected IP: {addr[0]}')
 
         thread = threading.Thread(target=handleRobot, args=robotid, daemon=True)
         thread.start()
@@ -143,6 +146,8 @@ def startServer():
 
 
 addRobots()
+print(Back.GREEN + "      READY TO START      ")
 threading.Thread(target=startServer, daemon=True).start()
 threading.Thread(target=checkRobots, daemon=True).start()
+print(f"Server IP: {socket.gethostbyname(socket.gethostname())}")
 input("ENTER TO CLOSE ALL THREADS")
