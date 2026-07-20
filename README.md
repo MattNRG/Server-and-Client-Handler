@@ -8,9 +8,9 @@ Updated version of NRG RoboCup Wi-Fi Handler. This is under development and rese
 
 Got rid of _Tie 'n' Pair_ replacing it with a new system. Using a static IP, the robots send connection requests themselves, avoiding the problem of looking for robots only at the start of the program. Likewise, using STREAM, not DGRAM, we can leave the connections open for easier messaging. 
 
-Everything is threaded (Maybe a bit too much), making sure everything gets through and processed.
+Everything is threaded, making sure everything gets through and processed.
 
-And finally, we no longer use JSON to save the IP's (Since the robots can connect at any time), and it's replaced with classes.
+And finally, we no longer use JSON to save the IP's (Since the robots can connect at any time), and it's now replaced with classes.
 
 
 > "If I’ve learned one thing, it’s that before you get anywhere in life, you have to stop listening to yourself"
@@ -36,8 +36,8 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 - [x] Move Information to Classes
 - [x] Implement Server and Client Communication
 - [x] Add struct support to communications
-- [x] Implement Heartbeat
-- [ ] Receive data from Vision and implement working Client heartbeat
-- [ ] Make Printing more readable/transparent about what's happening
-- [ ] Add Early Info to Client
+- [x] Implement Heartbeat working Client heartbeat
+- [x] Make Printing more readable/transparent about what's happening
+- [ ] Receive data from Vision
+- [ ] Add Early Info Store to Client
 - [ ] Add GetInfo and SetParams to Client
