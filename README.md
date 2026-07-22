@@ -33,11 +33,14 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 - Pack and Unpack: *Implemented Structs to pack and unpack data.*
 
 ## Roadmap
-- [x] Move Information to Classes
-- [x] Implement Server and Client Communication
+- [x] Store Robot information with Classes
+- [x] Implement Server and Client (Robot) Communication
 - [x] Add struct support to communications
-- [x] Implement Heartbeat working Client heartbeat
-- [x] Make Printing more readable/transparent about what's happening
-- [ ] Receive data from Vision
-- [ ] Add Early Info Store to Client
+- [x] Implement Heartbeat to check if the robot is 'active'
+- [x] Make Console more readable/transparent
+- [ ] Vision
+  - [x] Update our vision to reflect sslclient Python Library
+  - [ ] Implement Vision to automatically update the robots classes (Position, onField, etc) 
+- [ ] Add Settings and simple Storage to Client
 - [ ] Add GetInfo and SetParams to Client
+- [ ] Move repository under TalTech RoboCup SSL Team 🎉
