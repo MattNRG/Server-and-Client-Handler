@@ -42,7 +42,7 @@ class visionClient:
         return packet
 
 def getVisionTest():
-    with open("vision_test.txt", "r") as f:
+    with open("misc/vision_test.txt", "r") as f:
         text = f.read()
 
     packet = SSL_WrapperPacket()

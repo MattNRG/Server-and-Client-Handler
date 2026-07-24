@@ -41,6 +41,8 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 - [ ] Vision
   - [x] Update our vision to reflect sslclient Python Library
   - [ ] Implement Vision to automatically update the robots classes (Position, onField, etc) 
+- [ ] Clean and rework the file structure, split the code into modules
 - [ ] Add Settings and simple Storage to Client
 - [ ] Add GetInfo and SetParams to Client
+- [ ] Add Console commands to server to edit settings
 - [ ] Move repository under TalTech RoboCup SSL Team 🎉
