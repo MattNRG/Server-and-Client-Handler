@@ -115,7 +115,6 @@ def handleRobot(robotid):
 
     if not robotClass.connected:
         return
-
     robotClass.disconnect()
     print(Fore.YELLOW + "[SERVER] Ending thread")
 

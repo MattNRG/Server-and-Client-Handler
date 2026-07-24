@@ -2,8 +2,9 @@ import socket
 import struct
 import threading
 import time
+import random
 
-roboID = "0"
+roboID = random.randint(0, 12).__str__()
 client = None
 connected = False
 print(f"Current IP: {socket.gethostbyname(socket.gethostname())}")
@@ -34,6 +35,6 @@ while True:
                 print("Closing connection")
                 client.close()
                 time.sleep(3)
-    except ConnectionRefusedError as r:
+    except Exception as r:
         print(f"{r}; retrying..")
-        time.sleep(1)
+        time.sleep(2)
