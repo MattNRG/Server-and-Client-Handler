@@ -1,0 +1,63 @@
+import colorama
+from colorama import Fore
+from misc.config import robotSettings as settings
+colorama.init(autoreset=True)
+
+ourRobots = {}
+opponents = {}
+LoadRobots = int(settings['LoadRobots'])
+
+class Ball:
+    def __init__(self):
+        self.position = (0, 0)
+
+
+class OppRobot:
+    def __init__(self, robotid):
+        self.id = robotid
+        self.position = (0, 0)
+        self.onMap = False
+
+    def __repr__(self):
+        return f"Opponent {self.id} is on map: {self.onMap}, position: {self.position}"
+
+
+class Robot:
+    def __init__(self, robotid):
+        self.id = robotid
+        self.addr = (0, 0)
+        self.socket = None
+        self.lastSeen = 0
+        self.connected = False
+
+        self.onMap = False
+        self.position = (0, 0)
+        self.rotation = 0
+        self.battery = 100
+        self.gyroRotation = 0
+
+    def __repr__(self):
+        return f"Robot {self.id} {self.addr[0]}, battery: {self.battery}, gyro: {self.gyroRotation}, on field map: {self.position}"
+
+    def getMessage(self):
+        return self.socket.recv(1024)
+
+    def sendMessage(self, package):
+        self.socket.send(package)
+
+    def disconnect(self):
+        self.connected = False
+        self.socket.close()
+        print(Fore.YELLOW + f"[ROBOT {self.id}] {self.addr[0]} disconnected")
+
+
+def addRobots():
+    for i in range(LoadRobots):
+        robotID = str(i)
+        robotClass = Robot(robotID)
+        ourRobots[robotID] = robotClass
+
+        oppsClass = OppRobot(robotID)
+        opponents[robotID] = oppsClass
+
+    print('[ROBOTS] Robots loaded successfully')
