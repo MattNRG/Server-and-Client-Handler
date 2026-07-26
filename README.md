@@ -1,5 +1,5 @@
 # Server & Client Handler
-Updated version of NRG RoboCup Wi-Fi Handler. This is under development and research thus It's not yet on the main repository.
+Updated version of NRG RoboCup Wi-Fi and Game Handler. This is under development and research, thus It's not yet on the main repository.
 
 <img width="2500" height="500" alt="Banner (2500 x 500 px)" src="https://github.com/user-attachments/assets/28f648a0-d93e-4b2f-8866-cc844aa6deb1" />
 
@@ -12,18 +12,9 @@ Everything is threaded, making sure everything gets through and processed.
 
 And finally, we no longer use JSON to save the IP's (Since the robots can connect at any time), and it's now replaced with classes.
 
-
-> "If I’ve learned one thing, it’s that before you get anywhere in life, you have to stop listening to yourself"
-Jerry Smith
-
-That being said, the old code is rubbish and the newer is way more modular. (Hopefully)
-
-
 ## Testing Equipment
 
 - TP-Link TL-WR844N
-
-- MacBook Pro 2020
 
 - Raspberry Pi 4
 
@@ -33,16 +24,16 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 - Pack and Unpack: *Implemented Structs to pack and unpack data.*
 
 ## Roadmap
-- [x] Store Robot information with Classes
-- [x] Implement Server and Client (Robot) Communication
+- [x] Store robot data using classes
+- [x] Implement Server-Client communication
 - [x] Add struct support to communications
-- [x] Implement Heartbeat to check if the robot is 'active'
-- [x] Make Console more readable/transparent
+- [x] Implement a heartbeat system to monitor robot connectivity
+- [x] Improve console readability and transparency
 - [x] Vision
-  - [x] Update our vision to reflect sslclient Python Library
-  - [x] Implement Vision to automatically update the robot classes (Position, onField, etc) 
-- [x] Clean and rework the file structure, split the code into modules
-- [x] Add Settings
-- [ ] Add GetInfo and SetParams to Client
-- [ ] Add Console commands to the server to edit settings
-- [ ] Move repository under TalTech RoboCup SSL Team 🎉
+  - [x] Update vision to be closer to sslclient Python Library
+  - [x] Automatically update the robot class data (Position, onField, etc) 
+- [x] Rework the file structure, split the code into modules
+- [x] Add a settings system
+- [ ] Add 'GetInfo' and 'SetParams' to the Client
+- [ ] Add server console commands
+- [ ] Transfer the repository to the TalTech RoboCup SSL Team 🎉
