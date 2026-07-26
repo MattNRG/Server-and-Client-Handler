@@ -38,11 +38,11 @@ That being said, the old code is rubbish and the newer is way more modular. (Hop
 - [x] Add struct support to communications
 - [x] Implement Heartbeat to check if the robot is 'active'
 - [x] Make Console more readable/transparent
-- [ ] Vision
+- [x] Vision
   - [x] Update our vision to reflect sslclient Python Library
-  - [ ] Implement Vision to automatically update the robots classes (Position, onField, etc) 
-- [ ] Clean and rework the file structure, split the code into modules
-- [ ] Add Settings and simple Storage to Client
+  - [x] Implement Vision to automatically update the robot classes (Position, onField, etc) 
+- [x] Clean and rework the file structure, split the code into modules
+- [x] Add Settings
 - [ ] Add GetInfo and SetParams to Client
-- [ ] Add Console commands to server to edit settings
+- [ ] Add Console commands to the server to edit settings
 - [ ] Move repository under TalTech RoboCup SSL Team 🎉
