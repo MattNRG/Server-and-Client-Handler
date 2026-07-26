@@ -6,8 +6,8 @@ import colorama
 from colorama import Fore, Back
 colorama.init(autoreset=True)
 from robots import ourRobots
-from config import wifiSettings as settings
-import notify as notify
+from misc.config import wifiSettings as settings
+from misc import config as notify
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((settings['ip'], int(settings['port'])))  # Listening on everything

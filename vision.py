@@ -4,7 +4,7 @@ import struct
 import pathlib
 from google.protobuf import text_format
 from robots import ourRobots, opponents
-from config import visionSettings as settings
+from misc.config import visionSettings as settings
 import time
 
 team = settings['team']

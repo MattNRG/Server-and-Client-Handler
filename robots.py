@@ -1,6 +1,6 @@
 import colorama
 from colorama import Fore
-from config import robotSettings as settings
+from misc.config import robotSettings as settings
 colorama.init(autoreset=True)
 
 ourRobots = {}
@@ -61,6 +61,3 @@ def addRobots():
         opponents[robotID] = oppsClass
 
     print('[ROBOTS] Robots loaded successfully')
-
-
-addRobots()

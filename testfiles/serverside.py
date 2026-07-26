@@ -4,8 +4,7 @@ import struct
 import threading
 import time
 import notify as notify  # Debug use only
-from vision import visionClient
-from robots import addRobots, ourRobots, opponents
+from robots import addRobots, ourRobots
 
 from colorama import Fore, Back
 colorama.init(autoreset=True)
