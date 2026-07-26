@@ -3,6 +3,11 @@ import socket
 import struct
 import pathlib
 from google.protobuf import text_format
+from robots import ourRobots, opponents
+import time
+
+team = 'yellow'
+updateInterval = 1
 
 if any(
         not os.path.exists('proto/' + proto + '_pb2.py')
@@ -47,3 +52,39 @@ def getVisionTest():
 
     packet = SSL_WrapperPacket()
     return text_format.Parse(text, packet)
+
+
+def updateRobots(packet):
+    if packet.HasField('detection'):
+        onFieldRobots = []
+        teamList = None
+        onFieldOpps = []
+        oppList = None
+        if team == "yellow":
+            teamList = packet.detection.robots_yellow
+            oppList = packet.detection.robots_blue
+        else:
+            teamList = packet.detection.robots_blue
+            oppList = packet.detection.robots_yellow
+
+        for robot in teamList:
+            id = robot.robot_id
+            onFieldRobots.append(robot.robot_id)
+
+            ourRobots[id].position = (robot.x, robot.y)
+            ourRobots[id].onField = True
+
+            print(f'[{team.upper()}] Robot {id} is at {robot.position}')
+
+        for robot in ourRobots:
+            ourRobots[robot].onField = robot in onFieldRobots
+
+        for robot in oppList:
+            onFieldOpps.append(robot.robot_id)
+            opponents[robot.robot_id].x = robot.x
+            opponents[robot.robot_id].y = robot.y
+            print(f'[OPPS] Robot {robot.robot_id} is at {robot.position}')
+
+def activateVision():
+    updateRobots(getVisionTest())
+    time.sleep(updateInterval)

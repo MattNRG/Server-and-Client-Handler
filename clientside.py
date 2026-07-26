@@ -4,7 +4,7 @@ import threading
 import time
 import random
 
-roboID = random.randint(0, 12).__str__()
+roboID = random.randint(0, 11).__str__()
 client = None
 connected = False
 print(f"Current IP: {socket.gethostbyname(socket.gethostname())}")

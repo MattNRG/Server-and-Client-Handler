@@ -1,22 +1,19 @@
-import colorama
 import socket
-import struct
 import threading
+import struct
 import time
-import notify as notify  # Debug use only
-from vision import visionClient
-from robots import addRobots, ourRobots, opponents
-
+import colorama
 from colorama import Fore, Back
 colorama.init(autoreset=True)
+from robots import ourRobots
+from config import wifiSettings as settings
+import notify as notify
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('0.0.0.0', 9997))  # Listening on everything
+server.bind((settings['ip'], int(settings['port'])))  # Listening on everything
 
-heartBeatTime = 10
-checkHeartbeat = 3
-loadRobots = 12  # Starts from 0
-
+heartBeatTime = settings['heartBeatTime']
+checkHeartbeat = settings['checkHeartbeat']
 
 def unpack(packet, robotClass):
 
@@ -79,6 +76,7 @@ def handleRobot(robotid):
 
 
 def startServer():
+    print(Fore.LIGHTRED_EX + f"Server IP: {socket.gethostbyname(socket.gethostname())}")
     server.listen()
     while True:
         client, addr = server.accept()
@@ -100,12 +98,3 @@ def startServer():
         thread = threading.Thread(target=handleRobot, args=robotid, daemon=True)
         thread.start()
         print(f"[SERVER] Currently {threading.active_count() - 2} connection threads active")
-
-
-addRobots()
-print(Back.GREEN + "        READY TO START        ")
-threading.Thread(target=startServer, daemon=True).start()
-threading.Thread(target=checkRobots, daemon=True).start()
-print(Fore.LIGHTRED_EX + f"Server IP: {socket.gethostbyname(socket.gethostname())}")
-input("ENTER TO CLOSE ALL THREADS")
-print(Back.RED + "       PROCESS FINISHED       ")
