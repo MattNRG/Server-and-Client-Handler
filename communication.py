@@ -12,8 +12,8 @@ import notify as notify
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((settings['ip'], int(settings['port'])))  # Listening on everything
 
-heartBeatTime = settings['heartBeatTime']
-checkHeartbeat = settings['checkHeartbeat']
+heartBeatTime = int(settings['heartBeatTime'])
+checkHeartbeat = int(settings['checkHeartbeat'])
 
 def unpack(packet, robotClass):
 

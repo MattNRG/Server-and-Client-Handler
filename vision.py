@@ -4,10 +4,11 @@ import struct
 import pathlib
 from google.protobuf import text_format
 from robots import ourRobots, opponents
+from config import visionSettings as settings
 import time
 
-team = 'yellow'
-updateInterval = 1
+team = settings['team']
+updateInterval = int(settings['updateInterval'])
 
 if any(
         not os.path.exists('proto/' + proto + '_pb2.py')
@@ -68,23 +69,25 @@ def updateRobots(packet):
             oppList = packet.detection.robots_yellow
 
         for robot in teamList:
-            id = robot.robot_id
+            id = str(robot.robot_id)
             onFieldRobots.append(robot.robot_id)
-
             ourRobots[id].position = (robot.x, robot.y)
             ourRobots[id].onField = True
 
-            print(f'[{team.upper()}] Robot {id} is at {robot.position}')
+            #print(f'[{team.upper()}] Robot {id} is at {ourRobots[id].position}')
 
         for robot in ourRobots:
             ourRobots[robot].onField = robot in onFieldRobots
 
         for robot in oppList:
-            onFieldOpps.append(robot.robot_id)
-            opponents[robot.robot_id].x = robot.x
-            opponents[robot.robot_id].y = robot.y
-            print(f'[OPPS] Robot {robot.robot_id} is at {robot.position}')
+            id = str(robot.robot_id)
+            onFieldOpps.append(id)
+            opponents[id].x = robot.x
+            opponents[id].y = robot.y
+            #print(f'[OPPS] Robot {id} is at {ourRobots[id].position}')
+data = getVisionTest()
 
 def activateVision():
-    updateRobots(getVisionTest())
-    time.sleep(updateInterval)
+    while True:
+        updateRobots(data)
+        time.sleep(updateInterval)

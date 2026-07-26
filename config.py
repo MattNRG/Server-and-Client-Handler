@@ -4,4 +4,4 @@ config.read('settings.ini')
 
 robotSettings = config['ROBOTS']
 wifiSettings = config['WIFI']
-VisionSettings = config['VISION']
+visionSettings = config['VISION']
