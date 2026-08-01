@@ -34,6 +34,6 @@ And finally, we no longer use JSON to save the IP's (Since the robots can connec
   - [x] Automatically update the robot class data (Position, onField, etc) 
 - [x] Rework the file structure, split the code into modules
 - [x] Add a settings system
-- [ ] Add 'GetInfo' and 'SetParams' to the Client
+- [ ] Add 'GetInfo' to the Client
 - [ ] Add server console commands
 - [ ] Transfer the repository to the TalTech RoboCup SSL Team 🎉

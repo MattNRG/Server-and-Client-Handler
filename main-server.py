@@ -2,7 +2,7 @@ import threading
 import colorama
 from robots import addRobots
 from vision import activateVision
-from communication import startServer, checkRobots
+from wifi import startServer, checkRobots
 
 from colorama import Back, Fore
 colorama.init(autoreset=True)

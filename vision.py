@@ -2,6 +2,7 @@ import os
 import socket
 import struct
 import pathlib
+
 from google.protobuf import text_format
 from robots import ourRobots, opponents
 from misc.config import visionSettings as settings
@@ -9,6 +10,7 @@ import time
 
 team = settings['team']
 updateInterval = int(settings['updateInterval'])
+useSavedData = bool(settings['useSavedData'])
 
 if any(
         not os.path.exists('proto/' + proto + '_pb2.py')
@@ -25,18 +27,24 @@ if any(
 print("[VISION] Proto files compiled.")
 from proto.ssl_vision_wrapper_pb2 import SSL_WrapperPacket
 
+def open_multicast_socket(ip: str, port: int) -> socket.socket:
+    # Adapted from https://stackoverflow.com/a/1794373 (CC BY-SA 4.0 by Gordon Wrigley)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    # Windows does not allow binding UDP sockets to a specific ip address.
+    sock.bind(('' if os.name == 'nt' else ip, port))
+
+    sock.setsockopt(
+        socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP,
+        struct.pack('4sl', socket.inet_aton(ip), socket.INADDR_ANY)
+    )
+    return sock
+
 class visionClient:
     def __init__(self, ip: str, port: int):
         self.packet = SSL_WrapperPacket()
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-        self.sock.bind(('' if os.name == 'nt' else ip, port))
-
-        self.sock.setsockopt(
-            socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP,
-            struct.pack('4sl', socket.inet_aton(ip), socket.INADDR_ANY)
-        )
+        self.sock = open_multicast_socket(ip, port)
         print("[VISION] Ready to receive.")
 
     def receive(self):
@@ -47,12 +55,12 @@ class visionClient:
         packet.ParseFromString(data)
         return packet
 
-def getVisionTest():
-    with open("misc/vision_test.txt", "r") as f:
-        text = f.read()
+    def getVisionTest(self):
+        with open("misc/vision_test.txt", "r") as f:
+            text = f.read()
 
-    packet = SSL_WrapperPacket()
-    return text_format.Parse(text, packet)
+        packet = SSL_WrapperPacket()
+        return text_format.Parse(text, packet)
 
 
 def updateRobots(packet):
@@ -85,9 +93,16 @@ def updateRobots(packet):
             opponents[id].x = robot.x
             opponents[id].y = robot.y
             #print(f'[OPPS] Robot {id} is at {ourRobots[id].position}')
-data = getVisionTest()
+
+
+vision = visionClient(settings['ip'], int(settings['port']))
 
 def activateVision():
     while True:
-        updateRobots(data)
+        if useSavedData:
+            package = vision.getVisionTest()
+        else:
+            package = vision.receive()
+
+        updateRobots(package)
         time.sleep(updateInterval)
