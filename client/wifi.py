@@ -4,7 +4,7 @@ import time
 import threading
 import random
 from misc.config import wifiSettings as settings
-from sensors import readOrientation
+from sensors import readOrientation, currentBattery, temperature
 
 connected = False
 client = None
@@ -20,7 +20,7 @@ def sendMessage(message):
 
 def heartBeat():
     while connected:
-        client.send(struct.pack('B', 4))
+        client.send(struct.pack('BBB', 4, currentBattery, temperature))
         time.sleep(heartBeatInterval)
 
 def sendOrientation():

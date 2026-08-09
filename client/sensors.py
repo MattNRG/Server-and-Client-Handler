@@ -1,5 +1,7 @@
 import random
 currentOrientation = 0
+currentBattery = 100
+temperature = 20
 
 def readOrientation():
     global currentOrientation

@@ -30,10 +30,14 @@ def unpack(packet, robotClass):
     robotClass.lastSeen = time.time()
     match packetType:  # Can be expanded later
         case 2:
+            # Will we replaced with other info
             packetType, battery, gyroRotation = struct.unpack('BBB', packet)
             robotClass.battery = battery
             robotClass.gyroRotation = gyroRotation
         case 4:
+            packetType, battery, temp = struct.unpack('BBB', packet)
+            robotClass.battery = battery
+            robotClass.temperature = temp
             robotClass.lastSeen = time.time()
         case 6:
             packetType, rotation = struct.unpack('Bi', packet)
@@ -42,6 +46,11 @@ def unpack(packet, robotClass):
         case 7:
             print(f'[ROBOT {robotClass.id}] {packet.decode()}')
             pass
+
+
+def sendCommand(robotid, vx, vy, w, kicker):
+    package = struct.pack('BBBBB', 1, vx, vy, w, kicker)
+    ourRobots[robotid].sendMessage(package)
 
 
 def checkRobots():

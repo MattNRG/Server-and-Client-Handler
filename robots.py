@@ -34,10 +34,23 @@ class Robot:
         self.position = (0, 0)
         self.rotation = 0
         self.battery = 100
-        self.gyroRotation = 0
+        self.gyroRotation = 0  # Don't remember what the plan with this was
+
+        self.temperature = 10
 
     def __repr__(self):
-        return f"Robot {self.id} {self.addr[0]}, battery: {self.battery}, gyro: {self.gyroRotation}, on field map: {self.position}"
+       # return f"Robot {self.id} {self.addr[0]}, battery: {self.battery}, gyro: {self.gyroRotation}, on field map: {self.position}"
+        info = (f""" [Robot {self.id}]
+        IP: {self.addr[0]}
+        Battery: {self.battery}
+        Temperature: {self.temperature}
+        Gyro: {self.gyroRotation}
+        Position: x: {self.position[0]}, y: {self.position[1]}
+        On Map: {self.onMap}
+        Connection: {self.connected}
+        Last Seen: {self.lastSeen}
+        """)
+        return info
 
     def getMessage(self):
         return self.socket.recv(1024)
