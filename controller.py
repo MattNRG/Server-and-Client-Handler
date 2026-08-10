@@ -1,7 +1,7 @@
 import time
 import pygame
 import colorama
-from colorama import Back
+from colorama import Back, Fore
 colorama.init(autoreset=True)
 
 class ControllerClass:
@@ -19,7 +19,7 @@ class ControllerClass:
 
     def __repr__(self):
         return f""" Controller
-Binded to: {self.bind}
+Binded to: ROBOT {self.bind}
 Running: {self.running}
 Left Stick: ({self.leftX:.2f}, {self.leftY:.2f})
 Right Stick: ({self.rightX:.2f}, {self.rightY:.2f})
@@ -27,24 +27,30 @@ Left Trigger: {self.leftTrigger:.2f}
 Right Trigger: {self.rightTrigger:.2f}"""
 
     def start(self):
+        if self.running:
+            print(Fore.RED + "[CONT] Controller already running")
+
         try:
             self.controller = pygame.joystick.Joystick(0)
             self.controller.init()
             self.running = True
-            print(Back.GREEN + "[CONT] Connected")
+            self.controller.rumble(1, 500,1)
+            print(Back.GREEN + f"[CONT] Connected {self.controller.get_name()}")
+            time.sleep(1)
+            self.controller.stop_rumble()
             return True
         except pygame.error as e:
             pygame.quit()
-            print(Back.RED + f"[CONT] Error: {e}")
+            print(Fore.RED + f"[CONT] Error: {e}")
             return False
 
     def stop(self):
         pygame.quit()
         self.running = False
-        print(Back.GREEN + "[CONT] Disconnected")
+        print("[CONT] Disconnected")
 
     def update(self):
-        if controller:
+        if self.controller is not None:
             pygame.event.pump()
             self.leftX = self.controller.get_axis(0)
             self.leftY = self.controller.get_axis(1)
@@ -54,16 +60,15 @@ Right Trigger: {self.rightTrigger:.2f}"""
             self.leftTrigger = self.controller.get_axis(4)
             self.rightTrigger = self.controller.get_axis(5)
 
-    def bind(self, roboid):
+    def control(self, roboid):
         self.bind = roboid
 
 
 pygame.init()
 controller = ControllerClass()
-controller.start()
 if __name__ == "__main__":
     controller.start()
     while True:
-        controller.update()
+       # controller.update()
         print(controller)
         time.sleep(1)

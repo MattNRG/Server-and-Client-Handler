@@ -47,12 +47,6 @@ def unpack(packet, robotClass):
             print(f'[ROBOT {robotClass.id}] {packet.decode()}')
             pass
 
-
-def sendCommand(robotid, vx, vy, w, kicker):
-    package = struct.pack('BBBBB', 1, vx, vy, w, kicker)
-    ourRobots[robotid].sendMessage(package)
-
-
 def checkRobots():
     # Basically heartbeat monitor so robo can connect again
     while True:

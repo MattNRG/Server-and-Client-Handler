@@ -8,7 +8,6 @@ from colorama import Fore, Back
 from controller import controller
 from misc.config import robotSettings as settings, visionSettings, changeSetting
 from robots import ourRobots, addRobots
-from wifi import sendCommand
 
 colorama.init(autoreset=True)
 
@@ -124,16 +123,29 @@ def startCommands():
 
                 case 'encont':
                     # Enables moving robots using Xbox Controller
+                    if controller.running:
+                        print('[CONT] Controller already running')
+                        continue
 
+                    controller.start()
                     continue
 
                 case 'decont':
+                    if not controller.running:
+                        print('[CONT] Controller is not running')
+                        continue
 
+                    controller.stop()
                     continue
 
                 case 'control':
                     # Binds a controller to a robot
-                    print(Back.RED + "THIS COMMAND IS NOT YET IMPLEMENTED")
+                    if not controller.running:
+                        print(Fore.RED + "[CONT] Controller is not running, please start it first")
+                        continue
+                    
+                    controller.control(commandList[1])
+                    print(Fore.GREEN + '[CONT] Controller bound to robot {commandList[1]}')
                     continue
 
                 case "pos":

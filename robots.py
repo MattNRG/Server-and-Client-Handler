@@ -1,4 +1,5 @@
 import colorama
+import struct
 from colorama import Fore
 from misc.config import robotSettings as settings
 colorama.init(autoreset=True)
@@ -55,7 +56,8 @@ class Robot:
     def getMessage(self):
         return self.socket.recv(1024)
 
-    def sendMessage(self, package):
+    def sendCommands(self, vx, vy, w, kicker):
+        package = struct.pack('BBBBB', 1, vx, vy, w, kicker)
         self.socket.send(package)
 
     def disconnect(self):
