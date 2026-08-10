@@ -5,7 +5,7 @@ import time
 import colorama
 from colorama import Fore, Back
 
-from controller import setupPygame, running, disconnectPygame
+from controller import controller
 from misc.config import robotSettings as settings, visionSettings, changeSetting
 from robots import ourRobots, addRobots
 from wifi import sendCommand
@@ -74,8 +74,6 @@ def getMapRobots():
 def startCommands():
     time.sleep(.1)
 
-    runningController = False
-
     print('[CMD] Console commands enabled, type "help" for more info')
     while True:
         try:
@@ -126,25 +124,11 @@ def startCommands():
 
                 case 'encont':
                     # Enables moving robots using Xbox Controller
-                    if not runningController:
-                        print(Back.LIGHTRED_EX + "THIS COMMAND IS BEING TESTED")
-                        success = setupPygame()
-                        if success:
-                            runningController = True
-                            running = True
-                            # threading.Thread(target=getJoystick, daemon=True).start()
-                            print(Back.GREEN + "[CONT] Controller successfully connected")
+
                     continue
 
                 case 'decont':
-                    if runningController:
-                        disconnectPygame()
-                        # Disables moving robots using Xbox Controller
-                        print(Back.LIGHTRED_EX + "THIS COMMAND IS BEING TESTED")
-                        disconnectPygame()
-                        print("[CONT] Disconnected controller")
-                    else:
-                        print(Fore.RED + "[CMD] There is no controller connected")
+
                     continue
 
                 case 'control':
@@ -190,6 +174,9 @@ def startCommands():
                 case 'help':
                     print(helpText)
                     continue
+
+                case "pass":
+                    break
             
             print('Invalid command, type "help" for more info')
 
