@@ -3,6 +3,8 @@ import struct
 import time
 import threading
 import random
+from math import fabs
+
 from misc.config import wifiSettings as settings
 from sensors import readOrientation, currentBattery, temperature
 
@@ -20,31 +22,37 @@ def sendMessage(message):
 
 def heartBeat():
     while connected:
-        client.send(struct.pack('BBB', 4, currentBattery, temperature))
-        time.sleep(heartBeatInterval)
+        package = struct.pack('<BBB', 4, currentBattery, temperature)
+        client.send(package)
+        time.sleep(heartBeatInterval)   
 
 def sendOrientation():
     while connected:
         print('Sending orientation')
         orientation = readOrientation()
         print(orientation)
-        client.send(struct.pack('Bi', 6, orientation))
-        print(f"Sending orientation: {orientation}")
+        package = struct.pack('<Bi', 6, orientation)
+        client.send(package)
+        print(f"Sent orientation: {orientation}")
         time.sleep(rotationInterval)
 
 def connect():
     global client, connected
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((ip, port))
-    connected = True
     print("Connected")
 
     # Needs confirmation, cuz robotid packet can be lost and orientation/heartbeat will be set as robotid
-    client.send(robotid.encode())
-    if not client.recv(1024).decode() == "OK":
-        print("Robotid not confirmed")
-        return
+    while True:
+        client.send(robotid.encode())
+        receive = client.recv(1024).decode()
+        print(receive)
+        if receive == "OK":
+            break
 
+        print("Robotid not confirmed")
+
+    connected = True
     threading.Thread(target=heartBeat).start()
     threading.Thread(target=sendOrientation).start()
     while connected:

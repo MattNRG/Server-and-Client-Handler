@@ -13,6 +13,8 @@ class Ball:
         self.position = (0, 0)
 
 
+ball = Ball()
+
 class OppRobot:
     def __init__(self, robotid):
         self.id = robotid
@@ -45,7 +47,7 @@ class Robot:
         IP: {self.addr[0]}
         Battery: {self.battery}
         Temperature: {self.temperature}
-        Gyro: {self.gyroRotation}
+        Rotation: {self.rotation}*
         Position: x: {self.position[0]}, y: {self.position[1]}
         On Map: {self.onMap}
         Connection: {self.connected}
@@ -60,8 +62,18 @@ class Robot:
         package = struct.pack('BBBBB', 1, vx, vy, w, kicker)
         self.socket.send(package)
 
+    def setParams(self, section, setting, value):
+        pass
+
+    def stop(self):
+        package = struct.pack('B', 5)
+
+    def getInfo(self):
+        package = struct.pack('B', 2)
+
     def disconnect(self):
         self.connected = False
+        self.addr = (0, 0)
         self.socket.close()
         print(Fore.YELLOW + f"[ROBOT {self.id}] {self.addr[0]} disconnected")
 

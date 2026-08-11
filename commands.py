@@ -1,4 +1,6 @@
 import sys
+import os
+import signal
 import threading
 import time
 
@@ -15,25 +17,28 @@ debug = False
 robotAmount = int(settings['LoadRobots'])
 
 helpText = """Welcome to the help menu! Currently available commands are:
-active           -   Lists all active robots
-map              -   Lists all robots on the map 
-list <ROBOTID>   -   Lists all or specific robot(s) 
-pos  <ROBOTID>   -   Displays the position of a specific robot ️
-threads          -   Displays the amount of active threads
-help             -   Shows this menu
-exit             -   Ends the program
-set <SETTING> <VALUE> -   Sets a setting
-team              -   Displays the current team
+active                 -   Lists all active robots
+map                    -   Lists all robots on the map 
+list <ROBOTID>         -   Lists all or specific robot(s) 
+pos  <ROBOTID>         -   Displays the position of a specific robot ️
+threads                -   Displays the amount of active threads
+help                   -   Shows this menu
+exit                   -   Ends the program
+set <SETTING> <VALUE>  -   Sets a setting
+team                   -   Displays the current team
 
-Following commands are meant only for debugging purposes:
+Movement:
 move <ROBOTID> <vX> <vY> <W> <Kicker?>  -   Moves a robot for 1000ms with the given parameters 
-kick <ROBOTID> <Kicker?>                -   Turns on the kicker  
+kick <ROBOTID>                          -   Turns on the kicker  
+
+Controller:
 encont                                  -   Enables moving robots using Xbox Controller  
 control <ROBOTID>                       -   Binds a controller to a robot                
 decont                                  -   Disables moving robots using Xbox Controller
                                                                                           
 Other:
-quote                                   -   Displays a quote from RoboCup 2026
+quote                                   -   A quote from RoboCup 2026
+credits                                 -   Credits to the developers
 """
 
 quote = """We had 1 month to design it, 1 month to build it, and one month to debug it.
@@ -86,6 +91,7 @@ def startCommands():
                 print(Back.RED + "       PROCESS FINISHED       ")
                 sys.exit()
 
+            # Commands
             match commandList[0]:
 
                 case 'hi':
@@ -124,7 +130,7 @@ def startCommands():
                 case 'encont':
                     # Enables moving robots using Xbox Controller
                     if controller.running:
-                        print('[CONT] Controller already running')
+                        print(Fore.RED + '[CONT] Controller already running')
                         continue
 
                     controller.start()
@@ -132,7 +138,7 @@ def startCommands():
 
                 case 'decont':
                     if not controller.running:
-                        print('[CONT] Controller is not running')
+                        print(Fore.RED + '[CONT] Controller is not running')
                         continue
 
                     controller.stop()
@@ -185,6 +191,10 @@ def startCommands():
 
                 case 'help':
                     print(helpText)
+                    continue
+
+                case 'credits':
+                    print(Fore.GREEN + 'Developed by: Diskett (MattNRG)')
                     continue
 
                 case "pass":
