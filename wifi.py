@@ -42,7 +42,8 @@ def unpack(packet, robotClass):
 
     packetType = packet[0]
     robotClass.lastSeen = time.time()
-    match packetType:  # Can be expanded later
+
+    match packetType:
         case 2:
             pass
         case 4:
@@ -65,7 +66,9 @@ def checkRobots():
             # print(f"Checking {robotID}")
             robotClass = ourRobots[robotID]
 
-            if time.time() - robotClass.lastSeen > heartBeatTime and robotClass.connected:
+            if not robotClass.connected: continue
+
+            if time.time() - robotClass.lastSeen > heartBeatTime:
                 print(Back.RED + f'[WI-FI] Disconnecting {robotID} due to inactivity')
                 robotClass.disconnect()
         time.sleep(checkHeartbeat)
@@ -79,6 +82,7 @@ def handleRobot(robotid):
             message = robotClass.getMessage()
 
             if message == "end" or message == "":
+                print('starting end')
                 break
 
             # Since there byte stream is causing issues we need to buffer the packets
@@ -87,7 +91,6 @@ def handleRobot(robotid):
             while len(buffer) >= 1:
                 packetType = buffer[0]
                 packetSize = packetSizes.get(packetType)
-
                 if packetSize is None:
                     print(f"[ROBOT {robotid}] Unknown packet type: {packetType}")
                     buffer = buffer[1:]
@@ -119,7 +122,13 @@ def startServer():
 
             while True:
                 try:
-                    robotid = client.recv(1024).decode()
+                    data = client.recv(1024)
+
+                    if not data:
+                        client.close()
+
+                    robotid = data.decode()
+                    
                     if type(int(robotid)) == int:
                         client.send('OK'.encode())
                         print('OK!')

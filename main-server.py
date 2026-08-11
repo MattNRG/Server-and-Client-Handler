@@ -15,7 +15,6 @@ threading.Thread(target=activateVision, daemon=True).start()
 print(Back.GREEN + "        READY TO START        ")
 threading.Thread(target=startServer, daemon=True).start()
 threading.Thread(target=checkRobots, daemon=True).start()
-input()
 threading.Thread(target=startCommands, daemon=True).start()
 
 # Things that need to be done in main thread

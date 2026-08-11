@@ -3,7 +3,6 @@ import struct
 import time
 import threading
 import random
-from math import fabs
 
 from misc.config import wifiSettings as settings
 from sensors import readOrientation, currentBattery, temperature
