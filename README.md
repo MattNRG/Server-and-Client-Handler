@@ -37,4 +37,5 @@ The following software is required to run the program:
 - [x] Add a settings system
 - [x] Add server console commands
 - [ ] Transfer the repository to the TalTech RoboCup SSL Team 🎉
+- [ ] Redesign and future-proof Client
 - [ ] Add 'GetInfo' to the Client
