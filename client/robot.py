@@ -11,10 +11,11 @@ class Robot:
         self.w = 0
         self.kicker = 0
 
-    def recieve(self):
-        pass
+    def getMessage(self):
+        packet = self.socket.recv(1024)
+        return packet
 
-    def sendPacket(self, packet):
+    def send(self, packet):
         self.socket.send(packet)
 
     def update(self, vx, vy, w, kicker):

@@ -72,6 +72,7 @@ class Robot:
         package = struct.pack('B', 2)
 
     def disconnect(self):
+        self.socket.send(('end').encode())
         self.connected = False
         self.addr = (0, 0)
         self.socket.close()

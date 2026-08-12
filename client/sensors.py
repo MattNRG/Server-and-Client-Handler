@@ -14,6 +14,12 @@ def readOrientation():
         currentOrientation = currentOrientation - 360
     return currentOrientation
 
+def readBattery():
+    return currentBattery
+
+def readTemperature():
+    return temperature
+
 def setOrientation(orientation):
     global currentOrientation
     currentOrientation = orientation
