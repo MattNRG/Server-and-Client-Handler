@@ -1,5 +1,5 @@
 # Server & Client Handler
-Updated version of NRG RoboCup Wi-Fi Handler and Game Controller. This is under development and research, thus It's not yet on the main repository.
+Updated version of NRG RoboCup Wi-Fi Handler and Game Controller. Focused on making the program more reliable and efficient.
 
 <img width="2500" height="500" alt="Banner (2500 x 500 px)" src="https://github.com/user-attachments/assets/28f648a0-d93e-4b2f-8866-cc844aa6deb1" />
 
@@ -18,10 +18,11 @@ And finally, we no longer use JSON to save the IP's (Since the robots can connec
 
 - Raspberry Pi 4
 
-## Updates
+## Software Requirements
+The following software is required to run the program:
+- Colorama
+- PyGame
 
-- Threads and Heartbeat: *Moved to classes, and now using a heartbeat to check if the robot is still connected.*
-- Pack and Unpack: *Implemented Structs to pack and unpack data.*
 
 ## Roadmap
 - [x] Store robot data using classes
@@ -34,6 +35,7 @@ And finally, we no longer use JSON to save the IP's (Since the robots can connec
   - [x] Automatically update the robot class data (Position, onField, etc) 
 - [x] Rework the file structure, split the code into modules
 - [x] Add a settings system
-- [ ] Add 'GetInfo' and 'SetParams' to the Client
-- [ ] Add server console commands
+- [x] Add server console commands
 - [ ] Transfer the repository to the TalTech RoboCup SSL Team 🎉
+- [ ] Redesign and future-proof Client
+- [ ] Add 'GetInfo' to the Client
