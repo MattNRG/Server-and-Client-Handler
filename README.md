@@ -19,7 +19,7 @@ And finally, we no longer use JSON to save the IP's (Since the robots can connec
 - Raspberry Pi 4
 
 ## Software Requirements
-The following software is required to run the program:
+The following dependencies are required to run the program:
 - Colorama
 - PyGame
 
