@@ -40,5 +40,3 @@ The following dependencies are required to run the program:
 - [x] Add a settings system
 - [x] Add server console commands
 - [x] Transfer the repository to the TalTech RoboCup SSL Team 🎉
-
-END OF PUBLIC REPOSITORY (for now)
