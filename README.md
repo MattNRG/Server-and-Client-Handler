@@ -1,6 +1,7 @@
 # Server & Client Handler
 Updated version of NRG RoboCup Wi-Fi Handler and Game Controller. Focused on making the program more reliable and efficient. 
-⚠️ Since the repository was moved under TalTech, this instance will no longer be updated ⚠️
+
+  ⚠️ Since the repository was moved under TalTech, this instance will no longer be updated ⚠️
 
 
 <img width="2500" height="500" alt="Banner (2500 x 500 px)" src="https://github.com/user-attachments/assets/28f648a0-d93e-4b2f-8866-cc844aa6deb1" />
